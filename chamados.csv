@@ -1,0 +1,9 @@
+﻿id,cliente,problema,prioridade,tempo_estimado
+101,Empresa A,Servidor fora do ar,1,40
+102,Empresa B,Erro no relatório,3,20
+103,Empresa C,Sistema lento,2,30
+104,Empresa D,Senha bloqueada,4,5
+105,Empresa E,Banco de dados indisponível,1,60
+106,Empresa F,Erro de impressão,5,10
+107,Empresa G,Falha no backup,2,35
+108,Empresa H,Atualização de sistema,4,50

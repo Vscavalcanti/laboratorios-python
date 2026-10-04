@@ -1,0 +1,10 @@
+﻿origem,destino,distancia,tempo
+Recife,Olinda,8,22
+Recife,Jaboatao,18,32
+Olinda,Paulista,14,25
+Paulista,Abreu e Lima,12,18
+Jaboatao,Cabo,24,28
+Cabo,Ipojuca,31,35
+Recife,Ipojuca,49,60
+Jaboatao,Ipojuca,38,44
+Olinda,Recife,8,22
