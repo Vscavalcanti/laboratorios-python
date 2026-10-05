@@ -1,4 +1,4 @@
-"""Lab 4 — BST x AVL:impacto do balanceamento
+"""Lab 4 balanceamento vazia = 0, um único nó = 1.
 """
 from collections import deque
 import pandas as pd
@@ -8,7 +8,7 @@ def ler_codigos(arquivo):
     df = pd.read_csv(arquivo, encoding="utf-8-sig")
     df.columns = [c.strip().lower() for c in df.columns]
     col = "codigo" if "codigo" in df.columns else df.columns[0]
-    return [int(v) for v in df[col]]   # exatamente na ordem
+    return [int(v) for v in df[col]]   # exatamente na ordem do arquivo
 
 
 # ---------------- BST ----------------
@@ -20,8 +20,7 @@ class NoBST:
 
 
 class BST:
-    """Inserção iterativa: com dados ordenados a árvore vira uma 'lista' e a
-    recursão estouraria o limite do Python."""
+    """ árvore vira uma 'lista' aonde estouraria o limite do Python."""
     def __init__(self):
         self.raiz = None
 
@@ -56,7 +55,7 @@ class BST:
         return nivel
 
     def buscar(self, chave):
-        """Retorna (encontrou, nº de comparações com nós visitados)."""
+        """Retorna (encontrou, nº de comparações visitados)."""
         atual, comps = self.raiz, 0
         while atual:
             comps += 1
@@ -122,13 +121,13 @@ class AVL:
             return no
         atualizar(no)
         fb = fator(no)
-        if fb > 1 and chave < no.esq.chave:          # # zig-zig (esq-esq)
+        if fb > 1 and chave < no.esq.chave:          #zig-zig (esq-esq)
             self.rotacoes += 1
             return rot_direita(no)
-        if fb < -1 and chave > no.dir.chave:         # zig-zig (dir-dir)
+        if fb < -1 and chave > no.dir.chave:         #zig-zag (dir-dir)
             self.rotacoes += 1
             return rot_esquerda(no)
-        if fb > 1 and chave > no.esq.chave:          # zig-zag (esq-dir)
+        if fb > 1 and chave > no.esq.chave:          #zig-zag (esq-dir)
             self.rotacoes += 2
             no.esq = rot_esquerda(no.esq)
             return rot_direita(no)
@@ -172,6 +171,31 @@ def main():
         print(f"{nome:<18}{len(codigos):>6}{bst.altura():>10}{avl.altura():>10}"
               f"{comp_bst:>11}{comp_avl:>11}{avl.rotacoes:>10}")
     print(f"\nMaior código buscado: {maior}")
+
+    desafio_c6()
+
+
+def contar_nos(no):
+    if no is None:
+        return 0
+    return 1 + contar_nos(no.esq) + contar_nos(no.dir)
+
+
+def desafio_c6():
+    print("\n" + "=" * 50)
+    print("DESAFIO C6 — Comparação de alturas")
+    print("=" * 50)
+    print(f"{'Estrutura':<11}{'Arquivo':<24}{'Nós':>5}{'Altura':>8}")
+    print("-" * 48)
+    for arquivo in ["dados_ordenados.csv", "dados_aleatorios.csv"]:
+        codigos = ler_codigos(arquivo)
+        bst, avl = BST(), AVL()
+        for c in codigos:
+            bst.inserir(c)
+            avl.inserir(c)
+        print(f"{'BST':<11}{arquivo:<24}{contar_nos(bst.raiz):>5}{bst.altura():>8}")
+        print(f"{'AVL':<11}{arquivo:<24}{contar_nos(avl.raiz):>5}{avl.altura():>8}")
+    print("-" * 48)
 
 
 if __name__ == "__main__":

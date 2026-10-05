@@ -1,4 +1,5 @@
-"""Lab 7 — Árvore de decisão"""
+"""Lab 7 — Árvore de decisão (Gini) """
+import math
 import pandas as pd
 
 FEATURES = ["idade", "salario", "tempo_empresa", "cargo"]
@@ -29,7 +30,7 @@ def find_best_split(X, y):
     melhor = {"gini": float("inf")}
     n = len(y)
     for f in range(len(X[0])):
-        for t in set(linha[f] for linha in X):          # cada valor vira um limiar candidato
+        for t in set(linha[f] for linha in X):          # cada valor vira um limiar 
             X_e, y_e, X_d, y_d = split_data(X, y, f, t)
             if not y_e or not y_d:
                 continue
@@ -95,7 +96,7 @@ def main():
     print(f"Gini da base inteira: {gini_impurity(y):.4f}\n")
 
     raiz = find_best_split(X, y)
-    _, y_e, _, y_d = raiz["esq"][0], raiz["esq"][1], raiz["dir"][0], raiz["dir"][1]
+    y_e, y_d = raiz["esq"][1], raiz["dir"][1]
     print("Melhor divisão na raiz:")
     print(f"   {FEATURES[raiz['feature']]} <= {raiz['threshold']}  (Gini ponderado = {raiz['gini']:.4f})")
     print(f"   Lado <=: {len(y_e):>3} pessoas, {100*sum(y_e)/len(y_e):5.1f}% saíram (Gini {gini_impurity(y_e):.3f})")
@@ -108,6 +109,67 @@ def main():
     pred = predict(arvore, X)
     acertos = sum(1 for a, b in zip(pred, y) if a == b)
     print(f"\nAcurácia nos próprios dados: {acertos}/{len(y)} = {acertos/len(y):.2%}")
+
+    desafio_c9(X, y)
+    desafio_c10(X, y)
+
+
+def entropy(y_subset):
+    """Desafio C10: Entropia = -Σ p·log2(p)."""
+    n = len(y_subset)
+    if n == 0:
+        return 0.0
+    contagem = {}
+    for v in y_subset:
+        contagem[v] = contagem.get(v, 0) + 1
+    total = 0.0
+    for c in contagem.values():
+        p = c / n
+        total -= p * math.log2(p)
+    return total
+
+
+def ponderado(funcao, y_esq, y_dir):
+    n = len(y_esq) + len(y_dir)
+    return len(y_esq) / n * funcao(y_esq) + len(y_dir) / n * funcao(y_dir)
+
+
+def desafio_c9(X, y):
+    print("\n" + "=" * 50)
+    print("DESAFIO C9 — Gini manual: salario <= 3500?")
+    print("=" * 50)
+    _, y_esq, _, y_dir = split_data(X, y, FEATURES.index("salario"), 3500)
+    for nome, ys in [("Antes da divisão", y), ("Ramo SIM (<= 3500)", y_esq), ("Ramo NÃO (> 3500)", y_dir)]:
+        n, saiu = len(ys), sum(ys)
+        print(f"{nome}: n = {n} | saiu = {saiu} | ficou = {n - saiu}")
+        print(f"   Gini = 1 - ({saiu}/{n})² - ({n - saiu}/{n})² = {gini_impurity(ys):.4f}")
+    g = ponderado(gini_impurity, y_esq, y_dir)
+    print(f"\nGini ponderado = ({len(y_esq)}/{len(y)})·{gini_impurity(y_esq):.4f} + "
+          f"({len(y_dir)}/{len(y)})·{gini_impurity(y_dir):.4f} = {g:.4f}")
+    print(f"Redução de impureza = {gini_impurity(y):.4f} - {g:.4f} = {gini_impurity(y) - g:.4f}")
+
+
+def desafio_c10(X, y):
+    print("\n" + "=" * 50)
+    print("DESAFIO C10 — Entropia x Gini")
+    print("=" * 50)
+    print(f"Nó original: Gini = {gini_impurity(y):.4f} | Entropia = {entropy(y):.4f}\n")
+    divisoes = [("salario", 3500), ("salario", 4100), ("idade", 30),
+                ("tempo_empresa", 3), ("cargo", 0)]
+    print(f"{'Pergunta':<22}{'Sim':>5}{'Não':>5}{'Gini pond.':>12}{'Entropia pond.':>16}")
+    melhor_g, melhor_e = None, None
+    for nome, t in divisoes:
+        _, y_esq, _, y_dir = split_data(X, y, FEATURES.index(nome), t)
+        g = ponderado(gini_impurity, y_esq, y_dir)
+        e = ponderado(entropy, y_esq, y_dir)
+        rotulo = f"{nome} <= {t}"
+        print(f"{rotulo:<22}{len(y_esq):>5}{len(y_dir):>5}{g:>12.4f}{e:>16.4f}")
+        if melhor_g is None or g < melhor_g[1]:
+            melhor_g = (rotulo, g)
+        if melhor_e is None or e < melhor_e[1]:
+            melhor_e = (rotulo, e)
+    print(f"\nEscolhida por Gini:     {melhor_g[0]}")
+    print(f"Escolhida por Entropia: {melhor_e[0]}")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-"""Lab 5 — Splay Tree acessos frequentes"""
+"""Lab 5 — acessos frequentes"""
 import os
 import pandas as pd
 
@@ -130,6 +130,49 @@ def main():
         print(f"   {p:<10} {sum(lista)/len(lista):.2f}  {lista}")
 
     print(f"\nTotal de acessos: {len(acessos)} | Produtos distintos acessados: {len(freq)}")
+
+    desafio_c7()
+
+
+def simular_sequencia(titulo, produtos, sequencia):
+    arvore = SplayTree()
+    for p in produtos:                  # árvore nova para cada sequência
+        arvore.inserir(p)
+    print(f"\n{titulo}")
+    print("   Acesso | Produto         | Comparações | Raiz após splay")
+    total_comps, trocas_de_raiz = 0, 0
+    for i, p in enumerate(sequencia, start=1):
+        comps = profundidade(arvore.raiz, p)
+        raiz_antes = arvore.raiz.chave
+        arvore.buscar(p)
+        if arvore.raiz.chave != raiz_antes:
+            trocas_de_raiz += 1
+        total_comps += comps
+        print(f"   {i:>6} | {p:<15} | {comps:>11} | {arvore.raiz.chave}")
+    return total_comps, trocas_de_raiz
+
+
+def desafio_c7():
+    print("\n" + "=" * 50)
+    print("DESAFIO C7 — Splay e localidade temporal")
+    print("=" * 50)
+    acessos = ler("acessos.csv")
+    produtos = ler("produtos.csv")
+
+    # mesmos acessos, mas cada produto repetido em sequência
+    contagem = {}
+    for p in acessos:
+        contagem[p] = contagem.get(p, 0) + 1
+    blocos = []
+    for p, qtd in contagem.items():
+        blocos.extend([p] * qtd)
+
+    c1, t1 = simular_sequencia("Sequência ORIGINAL (intercalada):", produtos, acessos)
+    c2, t2 = simular_sequencia("Sequência EM BLOCOS (repetidos agrupados):", produtos, blocos)
+
+    print(f"\n{'':<12}{'Comparações':>13}{'Trocas de raiz':>16}")
+    print(f"{'Original':<12}{c1:>13}{t1:>16}")
+    print(f"{'Em blocos':<12}{c2:>13}{t2:>16}")
 
 
 if __name__ == "__main__":
