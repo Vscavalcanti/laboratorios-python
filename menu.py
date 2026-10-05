@@ -1,26 +1,32 @@
-"""Menu Laboratórios 3 a 7 (com os desafios C5 a C10 dentro deles)
-e Desafios C1 a C4. (caso de erro normalmente ta sendo aqui, não nos labs)
-"""
+"""Menu """
 import os
 import runpy
 
-# Garante que os arquivos sejam procurados na pasta deste menu NAO MUDAR
+# garante que puxa os dados pelo menu
 PASTA = os.path.dirname(os.path.abspath(__file__))
 os.chdir(PASTA)
 
 LABS = {
-    "3": ("Trie — autocomplete (+ desafio C5)", "lab3_trie", ["palavras.csv"]),
-    "4": ("BST x AVL — balanceamento (+ desafio C6)", "lab4_bst_avl", ["dados_ordenados.csv", "dados_aleatorios.csv"]),
-    "5": ("Splay — acessos frequentes (+ desafio C7)", "lab5_splay", ["acessos.csv", "produtos.csv"]),
-    "6": ("TreeSort — ordenando vendas (+ desafio C8)", "lab6_treesort", ["vendas.csv"]),
-    "7": ("Árvore de decisão — Gini (+ desafios C9 e C10)", "lab7_arvore_decisao", ["funcionarios.csv"]),
+    "1": ("Heap — chamados", "lab1_heap", ["chamados.csv"]),
+    "2": ("BST — produtos", "lab2_bst", ["produtos.csv"]),
+    "3": ("Trie — autocomplete", "lab3_trie", ["palavras.csv"]),
+    "4": ("BST x AVL — balanceamento", "lab4_bst_avl", ["dados_ordenados.csv", "dados_aleatorios.csv"]),
+    "5": ("Splay — acessos frequentes", "lab5_splay", ["acessos.csv", "produtos.csv"]),
+    "6": ("TreeSort — ordenando vendas", "lab6_treesort", ["vendas.csv"]),
+    "7": ("Árvore de decisão", "lab7_arvore_decisao", ["funcionarios.csv"]),
 }
 
 DESAFIOS = {
     "C1": ("Heap com desempate", "c1_heap_desempate", ["chamados.csv"]),
     "C2": ("Top 3 chamados urgentes", "c2_top3_urgentes", ["chamados.csv"]),
-    "C3": ("Busca de faixa na BST", "c3_busca_faixa_bst", ["produtos.csv"]),
-    "C4": ("BST com preço como chave", "c4_bst_preco", ["produtos.csv"]),
+    "C3": ("Busca de faixa", "c3_busca_faixa_bst", ["produtos.csv"]),
+    "C4": ("preço como chave", "c4_bst_preco", ["produtos.csv"]),
+    "C5": ("ranking", "c5_trie_ranking", ["palavras.csv"]),
+    "C6": ("Comparação de alturas", "c6_comparacao_alturas", ["dados_ordenados.csv", "dados_aleatorios.csv"]),
+    "C7": ("Splay e localidade temporal", "c7_splay_localidade", ["acessos.csv", "produtos.csv"]),
+    "C8": ("decrescente", "c8_treesort_decrescente", ["vendas.csv"]),
+    "C9": ("Gini", "c9_gini_manual", ["funcionarios.csv"]),
+    "C10": ("Entropia x Gini", "c10_entropia", ["funcionarios.csv"]),
 }
 
 OPCOES = {**LABS, **DESAFIOS}
@@ -78,6 +84,8 @@ def main():
         elif opcao == "D":
             limpar_tela()
             for codigo in DESAFIOS:
+                if codigo == "C5":     
+                    print("(C5 é interativo: digite prefixos e aperte Enter vazio para continuar)")
                 executar(codigo, limpar=False)
         elif opcao in OPCOES:
             executar(opcao)

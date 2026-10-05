@@ -25,27 +25,27 @@ def rot_esquerda(x):
 
 
 def splay(raiz, chave):
-    """Traz a chave (ou o último nó visitado) para a raiz usando zig, zig-zig e zig-zag."""
+    """Traz o último nó visitado para a raiz usando zig, zig-zig e zig-zag."""
     if raiz is None or raiz.chave == chave:
         return raiz
     if chave < raiz.chave:
         if raiz.esq is None:
             return raiz
-        if chave < raiz.esq.chave:                       # zig-zig (esq-esq)
+        if chave < raiz.esq.chave:                       
             raiz.esq.esq = splay(raiz.esq.esq, chave)
             raiz = rot_direita(raiz)
-        elif chave > raiz.esq.chave:                     # zig-zag (esq-dir)
+        elif chave > raiz.esq.chave:                    
             raiz.esq.dir = splay(raiz.esq.dir, chave)
             if raiz.esq.dir:
                 raiz.esq = rot_esquerda(raiz.esq)
-        return rot_direita(raiz) if raiz.esq else raiz   # zig final
+        return rot_direita(raiz) if raiz.esq else raiz   
     else:
         if raiz.dir is None:
             return raiz
-        if chave > raiz.dir.chave:                       # zig-zig (dir-dir)
+        if chave > raiz.dir.chave:                      
             raiz.dir.dir = splay(raiz.dir.dir, chave)
             raiz = rot_esquerda(raiz)
-        elif chave < raiz.dir.chave:                     # zig-zag (dir-esq)
+        elif chave < raiz.dir.chave:                    
             raiz.dir.esq = splay(raiz.dir.esq, chave)
             if raiz.dir.esq:
                 raiz.dir = rot_direita(raiz.dir)
@@ -80,7 +80,7 @@ class SplayTree:
 
 
 def profundidade(raiz, chave):
-    """Comparações necessárias para achar a chave ANTES do splay."""
+    """Comparações para achar a chave ANTES do splay."""
     atual, comps = raiz, 0
     while atual:
         comps += 1
@@ -130,49 +130,6 @@ def main():
         print(f"   {p:<10} {sum(lista)/len(lista):.2f}  {lista}")
 
     print(f"\nTotal de acessos: {len(acessos)} | Produtos distintos acessados: {len(freq)}")
-
-    desafio_c7()
-
-
-def simular_sequencia(titulo, produtos, sequencia):
-    arvore = SplayTree()
-    for p in produtos:                  # árvore nova para cada sequência
-        arvore.inserir(p)
-    print(f"\n{titulo}")
-    print("   Acesso | Produto         | Comparações | Raiz após splay")
-    total_comps, trocas_de_raiz = 0, 0
-    for i, p in enumerate(sequencia, start=1):
-        comps = profundidade(arvore.raiz, p)
-        raiz_antes = arvore.raiz.chave
-        arvore.buscar(p)
-        if arvore.raiz.chave != raiz_antes:
-            trocas_de_raiz += 1
-        total_comps += comps
-        print(f"   {i:>6} | {p:<15} | {comps:>11} | {arvore.raiz.chave}")
-    return total_comps, trocas_de_raiz
-
-
-def desafio_c7():
-    print("\n" + "=" * 50)
-    print("DESAFIO C7 — Splay e localidade temporal")
-    print("=" * 50)
-    acessos = ler("acessos.csv")
-    produtos = ler("produtos.csv")
-
-    # mesmos acessos, mas cada produto repetido em sequência
-    contagem = {}
-    for p in acessos:
-        contagem[p] = contagem.get(p, 0) + 1
-    blocos = []
-    for p, qtd in contagem.items():
-        blocos.extend([p] * qtd)
-
-    c1, t1 = simular_sequencia("Sequência ORIGINAL (intercalada):", produtos, acessos)
-    c2, t2 = simular_sequencia("Sequência EM BLOCOS (repetidos agrupados):", produtos, blocos)
-
-    print(f"\n{'':<12}{'Comparações':>13}{'Trocas de raiz':>16}")
-    print(f"{'Original':<12}{c1:>13}{t1:>16}")
-    print(f"{'Em blocos':<12}{c2:>13}{t2:>16}")
 
 
 if __name__ == "__main__":

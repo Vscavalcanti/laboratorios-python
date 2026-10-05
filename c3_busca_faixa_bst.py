@@ -1,7 +1,4 @@
-"""C3 — Busca de faixa na BST (produtos.csv)
-Retorna os produtos com código entre 30 e 70 usando a própria BST:
-só descemos para um lado quando ainda pode haver códigos dentro da faixa.
-"""
+"""C3 — Busca na BST (produtos.csv)"""
 import pandas as pd
 
 
@@ -30,11 +27,11 @@ def busca_faixa(no, minimo, maximo, resultado):
     if no is None:
         return
     visitados.append(no.chave)
-    if minimo < no.chave:                 # pode haver códigos válidos à esquerda
+    if minimo < no.chave:                 
         busca_faixa(no.esq, minimo, maximo, resultado)
-    if minimo <= no.chave <= maximo:      # o próprio nó está na faixa
+    if minimo <= no.chave <= maximo:     
         resultado.append(no.registro)
-    if no.chave < maximo:                 # pode haver códigos válidos à direita
+    if no.chave < maximo:                 
         busca_faixa(no.dir, minimo, maximo, resultado)
 
 

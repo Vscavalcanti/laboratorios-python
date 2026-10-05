@@ -1,7 +1,4 @@
-"""C2 — Top 3 chamados urgentes (chamados.csv)
-Mostra os três próximos atendimentos SEM destruir a fila original:
-os heappop são feitos numa cópia da heap.
-"""
+"""C2 — Top 3 urgentes (chamados.csv)"""
 import heapq
 import pandas as pd
 
@@ -15,7 +12,7 @@ def main():
 
     print(f"Tamanho da fila original antes: {len(fila)}")
 
-    copia = fila.copy()               # cópia rasa já é uma heap válida
+    copia = fila.copy()          
     print("\nTrês próximos chamados a serem atendidos:")
     for i in range(3):
         prioridade, tempo, _, c = heapq.heappop(copia)

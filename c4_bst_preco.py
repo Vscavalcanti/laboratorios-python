@@ -1,6 +1,4 @@
-"""C4 — BST com preço como chave (produtos.csv)
-Percurso em ordem (esquerda -> raiz -> direita) lista do mais barato ao mais caro.
-"""
+"""C4 — BST com preço como chave"""
 import pandas as pd
 
 
@@ -17,7 +15,7 @@ def inserir(no, preco, registro):
         return No(preco, registro)
     if preco < no.preco:
         no.esq = inserir(no.esq, preco, registro)
-    else:                                  # preços iguais vão para a direita
+    else:                                  # preços iguaispara a direita
         no.dir = inserir(no.dir, preco, registro)
     return no
 

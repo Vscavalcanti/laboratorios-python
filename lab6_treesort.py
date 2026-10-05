@@ -1,4 +1,4 @@
-"""Lab 6 — ordenando vendas com BST a ordenação vem do percurso em ordem."""
+"""Lab 6 — ordenando vendas com BST"""
 import time
 import pandas as pd
 
@@ -6,7 +6,7 @@ import pandas as pd
 class No:
     def __init__(self, valor, registro):
         self.valor = valor
-        self.registros = [registro]   #iguais ficam no mesmo nó 
+        self.registros = [registro] 
         self.esq = None
         self.dir = None
 
@@ -67,7 +67,6 @@ def treesort(registros):
 def main():
     df = pd.read_csv("vendas.csv", encoding="utf-8-sig")
     registros = df.to_dict("records")       
-
     t0 = time.perf_counter()
     ordenados, arvore = treesort(registros)
     t1 = time.perf_counter()
@@ -84,38 +83,12 @@ def main():
              for i in range(len(ordenados) - 1))
     print(f"\nValidação: arquivo ordenado pelo valor? {ok}")
 
-    # Experimento: reconstruir a BST com os valores JÁ em ordem crescente
+    # reconstroi a BST com os valores JÁ em ordem crescente
     t2 = time.perf_counter()
     _, arvore_pior = treesort(ordenados)
     t3 = time.perf_counter()
     print(f"\nAltura da BST (ordem original):  {arvore.altura():>5}  | tempo {1000*(t1-t0):.3f} ms")
     print(f"Altura da BST (entrada crescente): {arvore_pior.altura():>4}  | tempo {1000*(t3-t2):.3f} ms")
-
-    desafio_c8(arvore, df.columns)
-
-
-def em_ordem_reversa(no, saida):
-    """Desafio C8: direita -> nó -> esquerda (maior para o menor)."""
-    if no is not None:
-        em_ordem_reversa(no.dir, saida)
-        saida.extend(no.registros)
-        em_ordem_reversa(no.esq, saida)
-
-
-def desafio_c8(arvore, colunas):
-    print("\n" + "=" * 50)
-    print("DESAFIO C8 — TreeSort decrescente")
-    print("=" * 50)
-    decrescente = []
-    em_ordem_reversa(arvore.raiz, decrescente)
-    pd.DataFrame(decrescente, columns=colunas).to_csv("vendas_ordenadas_desc.csv", index=False)
-    print("vendas_ordenadas_desc.csv gerado (maior -> menor):\n")
-    print(pd.DataFrame(decrescente).to_string(index=False))
-    ok = True
-    for i in range(len(decrescente) - 1):
-        if float(decrescente[i]["valor"]) < float(decrescente[i + 1]["valor"]):
-            ok = False
-    print(f"\nValidação: ordem decrescente? {ok}")
 
 
 if __name__ == "__main__":
